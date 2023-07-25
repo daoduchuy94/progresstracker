@@ -1,39 +1,33 @@
+import esClient from "@/db";
 import { NextApiHandler } from "next";
-
-interface User {
-  id: number;
+export interface Userdocument {
   name: string;
+  email: string;
   password: string;
+  age: number;
+  date_created: Date | string | number;
 }
-
-const myArray: User[] = [{ id: 1, name: "Huy", password: "123123123" }];
-
-const allCharacters =
-  "abc!@#$%^&*(defghijklm@#$%^&*(SNKJNJKADSNIQWEnopqrstuvwxyz";
-const random = () => Math.floor(Math.random() * allCharacters.length);
 const handler: NextApiHandler = async (request, response) => {
-  // myArray.push(5);
-  myArray.push({ id: 2, name: "SDSAD", password: "12312" });
-  for (let i = 0; i < 100; i++) {
-    myArray.push({
-      id: i + 1,
-      name:
-        allCharacters[random()] +
-        allCharacters[random()] +
-        allCharacters[random()],
-      password:
-        allCharacters[random()] +
-        allCharacters[random()] +
-        allCharacters[random()] +
-        allCharacters[random()] +
-        allCharacters[random()] +
-        allCharacters[random()] +
-        allCharacters[random()] +
-        allCharacters[random()] +
-        allCharacters[random()],
+  try {
+    //! create an index: esClient.indices.create({index: [someIndexName] })
+    //! add documents to an index called "users": esClient.index<Some_Interface_Here>({index:"users",document:{
+    //! name:"Jack", password:"Bob", age:15, date_created: new Date(), ...
+    //!}})
+
+    const resolve = await esClient.index<Userdocument>({
+      index: "users",
+      document: {
+        age: 66,
+        date_created: new Date(),
+        email: "123wewewesd@gmail.com",
+        name: "Nam",
+        password: "dceewefsqwe231231df",
+      },
     });
+    response.status(200).json(resolve);
+  } catch (error: any) {
+    response.send(error.message);
   }
-  response.status(200).json(myArray);
 };
 
 export default handler;
